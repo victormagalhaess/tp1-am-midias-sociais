@@ -1,0 +1,25 @@
+host: localhost:8080
+info:
+  contact:
+    email: hello@victordias.dev
+    name: Victor Magalhães
+  description: This is the backend application for the go_api_template.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: go_api_template
+  version: "1.0"
+paths:
+  /api/v1/healthcheck:
+    get:
+      description: Healthcheck endpoint
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+      summary: Endpoint to check the health of the application
+      tags:
+      - Healthcheck
+swagger: "2.0"

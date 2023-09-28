@@ -1,0 +1,37 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is the backend application for the go_api_template.",
+        "title": "go_api_template",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Victor Magalhães",
+            "email": "hello@victordias.dev"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "paths": {
+        "/api/v1/healthcheck": {
+            "get": {
+                "description": "Healthcheck endpoint",
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Healthcheck"
+                ],
+                "summary": "Endpoint to check the health of the application",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    }
+}
