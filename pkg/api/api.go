@@ -26,5 +26,6 @@ func (a *Application) InitializeSwagger() {
 
 func (a *Application) initializeRoutes() {
 	a.Router.HandleFunc("/api/v1/healthcheck", controllers.Healthcheck).Methods("GET")
+	a.Router.HandleFunc("/api/v1/tracker", controllers.Tracker).Methods("POST")
 	a.Router.Use(middlewares.Logger(log.Default()))
 }
