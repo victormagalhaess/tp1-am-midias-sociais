@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 
@@ -48,8 +49,10 @@ func DoGetRequest(url string, user string) (*http.Response, error) {
 	return res, nil
 }
 
-func GetUsers(user string) (*model.User, error) {
-	res, err := DoGetRequest("https://api-hexastats.vercel.app/summoners/br1/%s", user)
+func GetUsers(username string) (*model.User, error) {
+	// you can run the hexastats project locally using your own riot api key: https://github.com/dawichi/hexastats
+	// recommended due to rate limits
+	res, err := DoGetRequest("https://api-hexastats.vercel.app/summoners/br1/%s", username)
 	if err != nil {
 		return nil, err
 	}
@@ -59,16 +62,18 @@ func GetUsers(user string) (*model.User, error) {
 		return nil, err
 	}
 
-	unmarshalledUser := &model.User{}
-	err = json.Unmarshal(bodyUsers, unmarshalledUser)
+	user := &model.User{}
+	err = json.Unmarshal(bodyUsers, user)
 	if err != nil {
 		return nil, err
 	}
-	return unmarshalledUser, nil
+	return user, nil
 }
 
-func GetStats(user string) (*model.Stats, error) {
-	res, err := DoGetRequest("https://api-hexastats.vercel.app/summoners/br1/%s/stats", user)
+func GetStats(username string) (*model.Stats, error) {
+	// you can run the hexastats project locally using your own riot api key: https://github.com/dawichi/hexastats
+	// recommended due to rate limits
+	res, err := DoGetRequest("https://api-hexastats.vercel.app/summoners/br1/%s/stats", username)
 	if err != nil {
 		return nil, err
 	}
@@ -78,27 +83,13 @@ func GetStats(user string) (*model.Stats, error) {
 		return nil, err
 	}
 
-	unmarshalledStats := &model.Stats{}
-	err = json.Unmarshal(bodyStats, unmarshalledStats)
+	stats := &model.Stats{}
+	err = json.Unmarshal(bodyStats, stats)
 	if err != nil {
 		return nil, err
 	}
-	return unmarshalledStats, nil
+	return stats, nil
 }
-
-// func Mine(request *model.Request) {
-// user, err := GetUsers(request.StartUser)
-// if err != nil {
-// 	return
-// }
-// saveStructToFile(fmt.Sprintf("%s_user.json", request.StartUser), user)
-
-// 	stats, err := GetStats(request.StartUser)
-// 	if err != nil {
-// 		return
-// 	}
-// 	saveStructToFile(fmt.Sprintf("%s_stats.json", request.StartUser), stats)
-// }
 
 func Mine(request *model.Request) {
 	visitedUsers := make(map[string]bool)
@@ -115,15 +106,17 @@ func snowballSampling(user string, depth int, visitedUsers map[string]bool) {
 
 	stats, err := GetStats(user)
 	if err != nil {
-		panic(err)
+		log.Print("Error getting the user stats")
+	} else {
+		saveStructToFile(fmt.Sprintf("%s_stats.json", user), stats)
 	}
-	saveStructToFile(fmt.Sprintf("%s_stats.json", user), stats)
 
 	users, err := GetUsers(user)
 	if err != nil {
-		return
+		log.Print("Error getting the user info")
+	} else {
+		saveStructToFile(fmt.Sprintf("%s_user.json", user), users)
 	}
-	saveStructToFile(fmt.Sprintf("%s_user.json", user), users)
 
 	for _, friend := range stats.Friends {
 		snowballSampling(friend.Name, depth-1, visitedUsers)
